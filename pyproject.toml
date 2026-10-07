@@ -1,0 +1,15 @@
+[project]
+name = "comfyui-cosmos-diffusionrenderer"
+version = "0.1.0"
+description = "ComfyUI nodes for NVIDIA Cosmos DiffusionRenderer: inverse rendering (G-buffers) and forward rendering (relighting)."
+readme = "README.md"
+requires-python = ">=3.10"
+
+[tool.comfy]
+PublisherId = ""
+DisplayName = "Cosmos DiffusionRenderer"
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+addopts = "--import-mode=importlib"

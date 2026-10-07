@@ -1,0 +1,5 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+# upstream clone fetched by install.py (large; fetched separately)
+cosmos-transfer1-diffusion-renderer/

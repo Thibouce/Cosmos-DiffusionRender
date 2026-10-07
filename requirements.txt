@@ -1,0 +1,25 @@
+# Dependencies of the upstream cosmos_predict1 code that ComfyUI does not already ship.
+# Install into ComfyUI's Python environment (Python 3.10, CUDA 12). See README.md.
+# Not listed here on purpose: torch/torchvision (use ComfyUI's), transformer-engine and
+# nvdiffrast (they need a CUDA toolchain; `python install.py` installs them).
+attrs
+better-profanity
+decord
+diffusers
+einops
+hydra-core
+imageio[pyav,ffmpeg]
+iopath
+loguru
+mediapy
+nltk
+omegaconf
+opencv-python
+peft
+pyyaml
+safetensors
+scikit-image
+sentencepiece
+termcolor
+transformers
+huggingface-hub

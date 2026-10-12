@@ -3,6 +3,9 @@
     "class_type": "LoadVideo",
     "inputs": {
       "file": "plate.mp4"
+    },
+    "_meta": {
+      "title": "[Source] LoadVideo"
     }
   },
   "2": {
@@ -12,6 +15,9 @@
         "1",
         0
       ]
+    },
+    "_meta": {
+      "title": "[Source] GetVideoComponents"
     }
   },
   "3": {
@@ -22,12 +28,18 @@
         0
       ],
       "fps": 24.0
+    },
+    "_meta": {
+      "title": "[SAM3] ComfyProAlpha_LoadVideo"
     }
   },
   "4": {
     "class_type": "LoadSAM3Model",
     "inputs": {
       "precision": "auto"
+    },
+    "_meta": {
+      "title": "[SAM3] LoadSAM3Model"
     }
   },
   "5": {
@@ -36,6 +48,9 @@
       "x": 0.5,
       "y": 0.5,
       "is_foreground": true
+    },
+    "_meta": {
+      "title": "[SAM3] SAM3CreatePoint"
     }
   },
   "6": {
@@ -45,6 +60,9 @@
         "5",
         0
       ]
+    },
+    "_meta": {
+      "title": "[SAM3] SAM3CombinePoints"
     }
   },
   "7": {
@@ -61,6 +79,9 @@
         "6",
         0
       ]
+    },
+    "_meta": {
+      "title": "[SAM3] SAM3VideoSegmentation"
     }
   },
   "8": {
@@ -77,6 +98,9 @@
       "start_frame": 0,
       "end_frame": 99,
       "direction": "forward"
+    },
+    "_meta": {
+      "title": "[SAM3] SAM3Propagate"
     }
   },
   "9": {
@@ -90,6 +114,9 @@
       "count": 100,
       "width": 1920,
       "height": 1080
+    },
+    "_meta": {
+      "title": "[SAM3] ComfyProAlpha_TrackMasks"
     }
   },
   "10": {
@@ -101,6 +128,9 @@
       ],
       "start": 0,
       "count": 100
+    },
+    "_meta": {
+      "title": "[Refine] ComfyProAlpha_Plate"
     }
   },
   "11": {
@@ -118,6 +148,9 @@
       "erode": 10,
       "dilate": 15,
       "radius": 2
+    },
+    "_meta": {
+      "title": "[Refine] ComfyProAlpha_Refine"
     }
   },
   "12": {
@@ -125,6 +158,9 @@
     "inputs": {
       "unet_name": "ltx-2.5-22b-distilled-transformer-comfy-int8-convrot.safetensors",
       "weight_dtype": "default"
+    },
+    "_meta": {
+      "title": "[LTX stack] UNETLoader"
     }
   },
   "13": {
@@ -136,6 +172,9 @@
       ],
       "lora_name": "ltx-2.5-22b-ic-lora-alpha-gen-0.9.safetensors",
       "strength_model": 1.0
+    },
+    "_meta": {
+      "title": "[LTX stack] LTXICLoRALoaderModelOnly"
     }
   },
   "14": {
@@ -146,11 +185,17 @@
         0
       ],
       "attention": "comfy kitchen attention"
+    },
+    "_meta": {
+      "title": "[LTX stack] ModelAttentionBackend"
     }
   },
   "15": {
     "class_type": "ComfyProAlpha_EmptyPrompt",
-    "inputs": {}
+    "inputs": {},
+    "_meta": {
+      "title": "[LTX stack] ComfyProAlpha_EmptyPrompt"
+    }
   },
   "16": {
     "class_type": "LTXVConditioning",
@@ -164,18 +209,27 @@
         0
       ],
       "frame_rate": 24.0
+    },
+    "_meta": {
+      "title": "[LTX stack] LTXVConditioning"
     }
   },
   "17": {
     "class_type": "VAELoader",
     "inputs": {
       "vae_name": "ltx-2.5-video-vae-conv-bf16.safetensors"
+    },
+    "_meta": {
+      "title": "[LTX stack] VAELoader"
     }
   },
   "18": {
     "class_type": "VAELoader",
     "inputs": {
       "vae_name": "ltx-2.5-audio-vae-bf16.safetensors"
+    },
+    "_meta": {
+      "title": "[LTX stack] VAELoader"
     }
   },
   "19": {
@@ -185,6 +239,9 @@
       "height": 1088,
       "length": 49,
       "batch_size": 1
+    },
+    "_meta": {
+      "title": "[LTX stack] EmptyLTXVLatentVideo"
     }
   },
   "20": {
@@ -197,24 +254,36 @@
         "18",
         0
       ]
+    },
+    "_meta": {
+      "title": "[LTX stack] LTXVEmptyLatentAudio"
     }
   },
   "21": {
     "class_type": "RandomNoise",
     "inputs": {
       "noise_seed": 42
+    },
+    "_meta": {
+      "title": "[LTX stack] RandomNoise"
     }
   },
   "22": {
     "class_type": "KSamplerSelect",
     "inputs": {
       "sampler_name": "euler_ancestral"
+    },
+    "_meta": {
+      "title": "[LTX stack] KSamplerSelect"
     }
   },
   "23": {
     "class_type": "ManualSigmas",
     "inputs": {
       "sigmas": "1.0, 0.99375, 0.9875, 0.98125, 0.975, 0.909375, 0.725, 0.421875, 0.0"
+    },
+    "_meta": {
+      "title": "[LTX stack] ManualSigmas"
     }
   },
   "24": {
@@ -227,6 +296,9 @@
       "start": 0,
       "length": 49,
       "end": 100
+    },
+    "_meta": {
+      "title": "[LTX A chunk 0] ComfyProAlpha_ChunkPad"
     }
   },
   "25": {
@@ -262,6 +334,9 @@
       "use_tiled_encode": false,
       "tile_size": 256,
       "tile_overlap": 64
+    },
+    "_meta": {
+      "title": "[LTX A chunk 0] LTXAddVideoICLoRAGuide"
     }
   },
   "26": {
@@ -275,6 +350,9 @@
         "20",
         0
       ]
+    },
+    "_meta": {
+      "title": "[LTX A chunk 0] LTXVConcatAVLatent"
     }
   },
   "27": {
@@ -293,6 +371,9 @@
         1
       ],
       "cfg": 1.0
+    },
+    "_meta": {
+      "title": "[LTX A chunk 0] CFGGuider"
     }
   },
   "28": {
@@ -318,6 +399,9 @@
         "26",
         0
       ]
+    },
+    "_meta": {
+      "title": "[LTX A chunk 0] SamplerCustomAdvanced"
     }
   },
   "29": {
@@ -327,6 +411,9 @@
         "28",
         0
       ]
+    },
+    "_meta": {
+      "title": "[LTX A chunk 0] LTXVSeparateAVLatent"
     }
   },
   "30": {
@@ -344,6 +431,9 @@
         "29",
         0
       ]
+    },
+    "_meta": {
+      "title": "[LTX A chunk 0] LTXVCropGuides"
     }
   },
   "31": {
@@ -357,6 +447,9 @@
         "17",
         0
       ]
+    },
+    "_meta": {
+      "title": "[LTX A chunk 0] ComfyProAlpha_DecodeAlpha"
     }
   },
   "32": {
@@ -369,6 +462,9 @@
       "start": 40,
       "length": 49,
       "end": 100
+    },
+    "_meta": {
+      "title": "[LTX A chunk 1] ComfyProAlpha_ChunkPad"
     }
   },
   "33": {
@@ -404,6 +500,9 @@
       "use_tiled_encode": false,
       "tile_size": 256,
       "tile_overlap": 64
+    },
+    "_meta": {
+      "title": "[LTX A chunk 1] LTXAddVideoICLoRAGuide"
     }
   },
   "34": {
@@ -417,6 +516,9 @@
         "20",
         0
       ]
+    },
+    "_meta": {
+      "title": "[LTX A chunk 1] LTXVConcatAVLatent"
     }
   },
   "35": {
@@ -435,6 +537,9 @@
         1
       ],
       "cfg": 1.0
+    },
+    "_meta": {
+      "title": "[LTX A chunk 1] CFGGuider"
     }
   },
   "36": {
@@ -460,6 +565,9 @@
         "34",
         0
       ]
+    },
+    "_meta": {
+      "title": "[LTX A chunk 1] SamplerCustomAdvanced"
     }
   },
   "37": {
@@ -469,6 +577,9 @@
         "36",
         0
       ]
+    },
+    "_meta": {
+      "title": "[LTX A chunk 1] LTXVSeparateAVLatent"
     }
   },
   "38": {
@@ -486,6 +597,9 @@
         "37",
         0
       ]
+    },
+    "_meta": {
+      "title": "[LTX A chunk 1] LTXVCropGuides"
     }
   },
   "39": {
@@ -499,6 +613,9 @@
         "17",
         0
       ]
+    },
+    "_meta": {
+      "title": "[LTX A chunk 1] ComfyProAlpha_DecodeAlpha"
     }
   },
   "40": {
@@ -511,6 +628,9 @@
       "start": 51,
       "length": 49,
       "end": 100
+    },
+    "_meta": {
+      "title": "[LTX A chunk 2] ComfyProAlpha_ChunkPad"
     }
   },
   "41": {
@@ -546,6 +666,9 @@
       "use_tiled_encode": false,
       "tile_size": 256,
       "tile_overlap": 64
+    },
+    "_meta": {
+      "title": "[LTX A chunk 2] LTXAddVideoICLoRAGuide"
     }
   },
   "42": {
@@ -559,6 +682,9 @@
         "20",
         0
       ]
+    },
+    "_meta": {
+      "title": "[LTX A chunk 2] LTXVConcatAVLatent"
     }
   },
   "43": {
@@ -577,6 +703,9 @@
         1
       ],
       "cfg": 1.0
+    },
+    "_meta": {
+      "title": "[LTX A chunk 2] CFGGuider"
     }
   },
   "44": {
@@ -602,6 +731,9 @@
         "42",
         0
       ]
+    },
+    "_meta": {
+      "title": "[LTX A chunk 2] SamplerCustomAdvanced"
     }
   },
   "45": {
@@ -611,6 +743,9 @@
         "44",
         0
       ]
+    },
+    "_meta": {
+      "title": "[LTX A chunk 2] LTXVSeparateAVLatent"
     }
   },
   "46": {
@@ -628,6 +763,9 @@
         "45",
         0
       ]
+    },
+    "_meta": {
+      "title": "[LTX A chunk 2] LTXVCropGuides"
     }
   },
   "47": {
@@ -641,6 +779,9 @@
         "17",
         0
       ]
+    },
+    "_meta": {
+      "title": "[LTX A chunk 2] ComfyProAlpha_DecodeAlpha"
     }
   },
   "48": {
@@ -659,6 +800,9 @@
         "47",
         0
       ]
+    },
+    "_meta": {
+      "title": "[LTX A stitch] ComfyProAlpha_Stitch"
     }
   },
   "49": {
@@ -679,6 +823,9 @@
       ],
       "grow": 6,
       "blur": 6.0
+    },
+    "_meta": {
+      "title": "[Isolate] ComfyProAlpha_Isolate"
     }
   },
   "50": {
@@ -691,6 +838,9 @@
       "start": 0,
       "length": 49,
       "end": 100
+    },
+    "_meta": {
+      "title": "[LTX B chunk 0] ComfyProAlpha_ChunkPad"
     }
   },
   "51": {
@@ -726,6 +876,9 @@
       "use_tiled_encode": false,
       "tile_size": 256,
       "tile_overlap": 64
+    },
+    "_meta": {
+      "title": "[LTX B chunk 0] LTXAddVideoICLoRAGuide"
     }
   },
   "52": {
@@ -739,6 +892,9 @@
         "20",
         0
       ]
+    },
+    "_meta": {
+      "title": "[LTX B chunk 0] LTXVConcatAVLatent"
     }
   },
   "53": {
@@ -757,6 +913,9 @@
         1
       ],
       "cfg": 1.0
+    },
+    "_meta": {
+      "title": "[LTX B chunk 0] CFGGuider"
     }
   },
   "54": {
@@ -782,6 +941,9 @@
         "52",
         0
       ]
+    },
+    "_meta": {
+      "title": "[LTX B chunk 0] SamplerCustomAdvanced"
     }
   },
   "55": {
@@ -791,6 +953,9 @@
         "54",
         0
       ]
+    },
+    "_meta": {
+      "title": "[LTX B chunk 0] LTXVSeparateAVLatent"
     }
   },
   "56": {
@@ -808,6 +973,9 @@
         "55",
         0
       ]
+    },
+    "_meta": {
+      "title": "[LTX B chunk 0] LTXVCropGuides"
     }
   },
   "57": {
@@ -821,6 +989,9 @@
         "17",
         0
       ]
+    },
+    "_meta": {
+      "title": "[LTX B chunk 0] ComfyProAlpha_DecodeAlpha"
     }
   },
   "58": {
@@ -833,6 +1004,9 @@
       "start": 40,
       "length": 49,
       "end": 100
+    },
+    "_meta": {
+      "title": "[LTX B chunk 1] ComfyProAlpha_ChunkPad"
     }
   },
   "59": {
@@ -868,6 +1042,9 @@
       "use_tiled_encode": false,
       "tile_size": 256,
       "tile_overlap": 64
+    },
+    "_meta": {
+      "title": "[LTX B chunk 1] LTXAddVideoICLoRAGuide"
     }
   },
   "60": {
@@ -881,6 +1058,9 @@
         "20",
         0
       ]
+    },
+    "_meta": {
+      "title": "[LTX B chunk 1] LTXVConcatAVLatent"
     }
   },
   "61": {
@@ -899,6 +1079,9 @@
         1
       ],
       "cfg": 1.0
+    },
+    "_meta": {
+      "title": "[LTX B chunk 1] CFGGuider"
     }
   },
   "62": {
@@ -924,6 +1107,9 @@
         "60",
         0
       ]
+    },
+    "_meta": {
+      "title": "[LTX B chunk 1] SamplerCustomAdvanced"
     }
   },
   "63": {
@@ -933,6 +1119,9 @@
         "62",
         0
       ]
+    },
+    "_meta": {
+      "title": "[LTX B chunk 1] LTXVSeparateAVLatent"
     }
   },
   "64": {
@@ -950,6 +1139,9 @@
         "63",
         0
       ]
+    },
+    "_meta": {
+      "title": "[LTX B chunk 1] LTXVCropGuides"
     }
   },
   "65": {
@@ -963,6 +1155,9 @@
         "17",
         0
       ]
+    },
+    "_meta": {
+      "title": "[LTX B chunk 1] ComfyProAlpha_DecodeAlpha"
     }
   },
   "66": {
@@ -975,6 +1170,9 @@
       "start": 51,
       "length": 49,
       "end": 100
+    },
+    "_meta": {
+      "title": "[LTX B chunk 2] ComfyProAlpha_ChunkPad"
     }
   },
   "67": {
@@ -1010,6 +1208,9 @@
       "use_tiled_encode": false,
       "tile_size": 256,
       "tile_overlap": 64
+    },
+    "_meta": {
+      "title": "[LTX B chunk 2] LTXAddVideoICLoRAGuide"
     }
   },
   "68": {
@@ -1023,6 +1224,9 @@
         "20",
         0
       ]
+    },
+    "_meta": {
+      "title": "[LTX B chunk 2] LTXVConcatAVLatent"
     }
   },
   "69": {
@@ -1041,6 +1245,9 @@
         1
       ],
       "cfg": 1.0
+    },
+    "_meta": {
+      "title": "[LTX B chunk 2] CFGGuider"
     }
   },
   "70": {
@@ -1066,6 +1273,9 @@
         "68",
         0
       ]
+    },
+    "_meta": {
+      "title": "[LTX B chunk 2] SamplerCustomAdvanced"
     }
   },
   "71": {
@@ -1075,6 +1285,9 @@
         "70",
         0
       ]
+    },
+    "_meta": {
+      "title": "[LTX B chunk 2] LTXVSeparateAVLatent"
     }
   },
   "72": {
@@ -1092,6 +1305,9 @@
         "71",
         0
       ]
+    },
+    "_meta": {
+      "title": "[LTX B chunk 2] LTXVCropGuides"
     }
   },
   "73": {
@@ -1105,6 +1321,9 @@
         "17",
         0
       ]
+    },
+    "_meta": {
+      "title": "[LTX B chunk 2] ComfyProAlpha_DecodeAlpha"
     }
   },
   "74": {
@@ -1123,6 +1342,9 @@
         "73",
         0
       ]
+    },
+    "_meta": {
+      "title": "[LTX B stitch] ComfyProAlpha_Stitch"
     }
   },
   "75": {
@@ -1159,6 +1381,9 @@
         "74",
         0
       ]
+    },
+    "_meta": {
+      "title": "[Final] ComfyProAlpha_Final"
     }
   },
   "76": {
@@ -1168,6 +1393,9 @@
         "75",
         1
       ]
+    },
+    "_meta": {
+      "title": "[Final] PreviewImage"
     }
   }
 }

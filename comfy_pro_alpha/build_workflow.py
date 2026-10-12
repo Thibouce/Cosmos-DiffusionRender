@@ -32,12 +32,15 @@ def chunk_starts(count, L, step):
 
 class Graph:
     def __init__(self):
-        self.nodes, self._n = {}, 0
+        self.nodes, self._n, self.label = {}, 0, ""
 
     def node(self, class_type, **inputs):
         self._n += 1
         nid = str(self._n)
-        self.nodes[nid] = {"class_type": class_type, "inputs": inputs}
+        n = {"class_type": class_type, "inputs": inputs}
+        if self.label:
+            n["_meta"] = {"title": f"[{self.label}] {class_type}"}
+        self.nodes[nid] = n
         return Out(nid)
 
 
@@ -66,10 +69,12 @@ def build(a):
 
     g = Graph()
     # --- source de la plaque (remplaçable par Load Plate Sequence, etc.) ---
+    g.label = "Source"
     load = g.node("LoadVideo", file=a.video)
     comps = g.node("GetVideoComponents", video=load.out(0))
     src = comps.out(0)
 
+    g.label = "SAM3"
     vid = g.node("ComfyProAlpha_LoadVideo", images=src, fps=fps)
     sam = g.node("LoadSAM3Model", precision="auto")
 
@@ -108,12 +113,14 @@ def build(a):
     refine_kw = {k: v for k, v in (("adds", union([point_track(x) for x in ok(p.get("adds", []))])),
                                    ("cuts", union([point_track(x) for x in ok(p.get("cuts", []))])),
                                    ("others", union([box_track(x) for x in ok(p.get("others", []))]))) if v is not None}
+    g.label = "Refine"
     plate = g.node("ComfyProAlpha_Plate", images=src, start=start, count=count)
     ref = g.node("ComfyProAlpha_Refine", plate=plate.out(0), target=target, vitmatte=a.vitmatte,
                  erode=a.erode, dilate=a.dilate, radius=a.stabilize_radius, **refine_kw)
     sel, refined, others = ref.out(0), ref.out(1), ref.out(2)
 
     # --- pile LTX-2.5 alpha-gen ---
+    g.label = "LTX stack"
     if a.ltx_model.lower().endswith(".gguf"):
         unet = g.node("UnetLoaderGGUF", unet_name=a.ltx_model)
     else:
@@ -139,9 +146,10 @@ def build(a):
     sigmas = g.node("ManualSigmas", sigmas=SIGMAS)
     plan = json.dumps({"n": count, "h": H, "w": W, "chunk": L, "starts": starts})
 
-    def ltx_pass(images, offset=0):
+    def ltx_pass(images, name, offset=0):
         chunks = {}
         for i, s in enumerate(starts):
+            g.label = f"LTX {name} chunk {i}"
             img = g.node("ComfyProAlpha_ChunkPad", images=images, start=offset + s, length=L, end=offset + count)
             guide = g.node("LTXAddVideoICLoRAGuide", positive=cond.out(0), negative=cond.out(1), vae=vae.out(0),
                            latent=latent.out(0), image=img.out(0), frame_idx=0, strength=1.0,
@@ -155,13 +163,16 @@ def build(a):
             crop = g.node("LTXVCropGuides", positive=guide.out(0), negative=guide.out(1), latent=sep.out(0))
             dec = g.node("ComfyProAlpha_DecodeAlpha", samples=crop.out(2), vae=vae.out(0))
             chunks[f"chunk_{i}"] = dec.out(0)
+        g.label = f"LTX {name} stitch"
         return g.node("ComfyProAlpha_Stitch", plan=plan, **chunks).out(0)
 
-    ltx = ltx_pass(src, offset=start)
+    ltx = ltx_pass(src, "A", offset=start)
     final_kw = {}
     if best:
+        g.label = "Isolate"
         iso = g.node("ComfyProAlpha_Isolate", plate=src, start=start, selection=sel, others=others, grow=6, blur=6.0)
-        final_kw["ltx_isolated"] = ltx_pass(iso.out(0))
+        final_kw["ltx_isolated"] = ltx_pass(iso.out(0), "B")
+    g.label = "Final"
     final = g.node("ComfyProAlpha_Final", plate=plate.out(0), ltx=ltx, selection=sel, refined=refined,
                    others=others, near_px=a.near_px, filename_prefix=prefix, format=a.format,
                    first_frame=a.first_frame + start, save=True, qc=True, comp=a.comp, **final_kw)
